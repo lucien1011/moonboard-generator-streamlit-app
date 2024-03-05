@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw
 import random
 import requests
 
-st.set_page_config(page_title = "MB Problem Generator", page_icon="", layout = "wide", initial_sidebar_state = "expanded")
+st.set_page_config(page_title = "Moonboard Problem Generator", page_icon="", layout = "wide", initial_sidebar_state = "expanded")
 
 purple_btn_colour = """
                         <style>
