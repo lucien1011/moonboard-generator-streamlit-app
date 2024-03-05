@@ -80,30 +80,49 @@ def Board(state):
         col2.button('Rate')
 
 def BoardPage(state):
-    st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>', unsafe_allow_html=True,)  # reduce sidebar width
-    st.markdown(purple_btn_colour, unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("# 🌕 Moonboard problem generator 🌑")
+        st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>', unsafe_allow_html=True,)  # reduce sidebar width
+        st.markdown(purple_btn_colour, unsafe_allow_html=True)
     if state.generate_problem:
         response = requests.get(url = generate_url.format(state.board_setup))
         state.board_light = response.json()['content']
         state.generate_problem = False
     if state.show_problem:
-        st.header('Generated Problem')
+        st.markdown('### Generated Problem')
         st.markdown(horizontal_bar, True)
         Board(state)                
+
+def SideBar(state):
+    st.sidebar.header("About")
+    st.sidebar.markdown(
+        "This app is an automatic Moonboard problem generator based on machine learning algorithms, developed with [streamlit](https://streamlit.io) and [AWS Lambda](https://en.wikipedia.org/wiki/AWS_Lambda)."
+    )
+    st.markdown(horizontal_bar, True)
+    st.sidebar.header("Setting")
+    state.board_setup = st.radio('Board Setup:', options=('2016','2017','2019','2024'), index=1, horizontal=True, )
+    if st.button("Generate"):
+        state.generate_problem = True
+        state.show_problem = True
+        st.rerun()
+    if st.button("Clear"):
+        state.show_problem = False
+        st.rerun()
+    st.markdown(horizontal_bar, True)
+
+    st.sidebar.header("Author")
+    st.sidebar.markdown("Developed by [Kin Ho (Lucien) Lo](https://khl-lucien.com/), who is a data scientist interested in applying his quantiative skills to solve various problems.")
+
+    st.sidebar.header('Resource')
+    st.sidebar.markdown("""
+- [Moonboard official website](https://moonclimbing.com/)
+""")
+
 
 def Main():
     BoardPage(state)
     with st.sidebar:
-        st.subheader("Moonboard Problem Generator")
-        st.markdown(horizontal_bar, True)
-        state.board_setup = st.radio('Board Setup:', options=('2016','2017','2019','2024'), index=1, horizontal=True, )
-        if st.button("Generate"):
-            state.generate_problem = True
-            state.show_problem = True
-            st.rerun()
-        if st.button("Clear"):
-            state.show_problem = False
-            st.rerun()
+        SideBar(state)
 
 if 'runpage' not in state: state.runpage = Main
 state.runpage()
